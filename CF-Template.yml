@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
-
 Description: >
     Test template to create EC2 Instance using CloudFormation
-
 Parameters:
     InstanceTypeParameter:
         Description: WebServer EC2 instance type
@@ -26,7 +24,6 @@ Parameters:
         Default: 0.0.0.0/0
         AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
         ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x.
-
 Mappings:
     RegionMap:
         us-east-1:
@@ -37,7 +34,6 @@ Mappings:
             HVM64: ami-0bdb828fd58c52235
         us-west-2:
             HVM64: ami-a0cfeed8
-
 Resources:
     WebServerInstance:
         Type: "AWS::EC2::Instance"
@@ -70,7 +66,6 @@ Resources:
                     /opt/aws/bin/cfn-init -v --stack $(AWS::StackId) --resource WebServerInstance --region $(AWS::Region)
     WebServerSecurityGroup:
         Type: AWS::EC2::SecurityGroup::penny-test_SG_Ohio
-
 Outputs:
     PublicIP:
         Description: EC2 public IP
