@@ -3,7 +3,7 @@ Description: >
     Test template to create EC2 Instance using CloudFormation
 Parameters:
     InstanceTypeParameter:
-        Description: WebServer EC2 instance type
+        Description: EC2 instance type
         Type: String
         Default: t2.micro
         AllowedValues:
@@ -14,7 +14,6 @@ Parameters:
     KeyName:
         Description: Name of an existing EC2 KeyPair for SSH access.
         Type: AWS::EC2::KeyPair::KeyName
-        Ref: KeyName
         ConstraintDescription: Must be the name of an existing EC2 KeyPair
     SSHLocation:
         Description: The IP address range that can be used to SSH to the EC2 instance
@@ -35,8 +34,8 @@ Mappings:
         us-west-2:
             HVM64: ami-a0cfeed8
 Resources:
-    WebServerInstance:
-        Type: "AWS::EC2::Instance"
+    EC2Instance:
+        Type: AWS::EC2::Instance
         Metadata:
             Comment: Install Apache, PHP
             AWS::CloudFormation::Init:
@@ -55,19 +54,19 @@ Resources:
                                 enabled: true
                                 ensureRunning: true
         Properties:
-            ImageID: !FindInMap [RegionMap, !Ref "AWS::Region", "HVM64"]
+            ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', 'HVM64']
             InstanceType: !Ref "InstanceTypeParameter"
-            KeyName: !Ref "KeyName"
-            SecurityGroups: !Ref "WebServerSecurityGroup"
+            KeyName: !Ref KeyName
+            SecurityGroups: ["penny-test_SG_Ohio"]
             UserData:
                 Fn::Base64: !Sub |
                     #!/bin/bash -xe
                     yum update -y aws-cfn-bootstrap
-                    /opt/aws/bin/cfn-init -v --stack $(AWS::StackId) --resource WebServerInstance --region $(AWS::Region)
-    WebServerSecurityGroup:
-        Type: AWS::EC2::SecurityGroup::penny-test_SG_Ohio
+                    /opt/aws/bin/cfn-init -v --stack $(AWS::StackId) --resource EC2Instance --region $(AWS::Region)
 Outputs:
+    InstanceID:
+        Description: The EC2 instance ID
+        Value: !Ref EC2Instance
     PublicIP:
         Description: EC2 public IP
-        Value: !GetAtt WebServer.PublicIP
-
+        Value: !GetAtt EC2Instance.PublicIp
