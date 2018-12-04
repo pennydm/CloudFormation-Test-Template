@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >
     Test template to create EC2 Instance using CloudFormation
+    
 Parameters:
     InstanceTypeParameter:
         Description: EC2 instance type
